@@ -29,8 +29,17 @@ class RowItemPaintParams
 public:
 	RowItemPaintParams(int left, int right);
 
-	int left() const;
-	int right() const;
+	int left() const {
+		return left_;
+	}
+
+	int right() const {
+		return right_;
+	}
+
+	int width() const {
+		return right_ - left_;
+	}
 
 private:
 	int left_;

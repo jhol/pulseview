@@ -26,14 +26,7 @@ namespace view {
 RowItemPaintParams::RowItemPaintParams(int left, int right) :
 	left_(left),
 	right_(right) {
-}
-
-int RowItemPaintParams::left() const {
-	return left_;
-}
-
-int RowItemPaintParams::right() const {
-	return right_;
+	assert(left <= right);
 }
 
 } // namespace view
