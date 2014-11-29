@@ -27,7 +27,7 @@
 #include "view.hpp"
 #include "viewport.hpp"
 
-#include <pv/sigsession.hpp>
+#include <pv/session.hpp>
 
 #include <QMouseEvent>
 

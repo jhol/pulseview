@@ -46,7 +46,7 @@ find_package(Qt4 REQUIRED)
 
 set(pulseview_TEST_SOURCES
 	${PROJECT_SOURCE_DIR}/pv/devicemanager.cpp
-	${PROJECT_SOURCE_DIR}/pv/sigsession.cpp
+	${PROJECT_SOURCE_DIR}/pv/session.cpp
 	${PROJECT_SOURCE_DIR}/pv/util.cpp
 	${PROJECT_SOURCE_DIR}/pv/view/cursorpair.cpp
 	${PROJECT_SOURCE_DIR}/pv/data/analog.cpp
@@ -87,7 +87,7 @@ set(pulseview_TEST_SOURCES
 
 # This list includes only QObject derived class headers.
 set(pulseview_TEST_HEADERS
-	${PROJECT_SOURCE_DIR}/pv/sigsession.hpp
+	${PROJECT_SOURCE_DIR}/pv/session.hpp
 	${PROJECT_SOURCE_DIR}/pv/prop/double.hpp
 	${PROJECT_SOURCE_DIR}/pv/prop/enum.hpp
 	${PROJECT_SOURCE_DIR}/pv/prop/int.hpp
