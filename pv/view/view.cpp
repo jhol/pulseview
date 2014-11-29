@@ -51,6 +51,7 @@
 using boost::shared_lock;
 using boost::shared_mutex;
 using pv::data::SignalData;
+using pv::data::Snapshot;
 using std::back_inserter;
 using std::deque;
 using std::dynamic_pointer_cast;
@@ -279,21 +280,25 @@ set< shared_ptr<SignalData> > View::get_visible_data() const
 
 pair<double, double> View::get_time_extents() const
 {
-	const set< shared_ptr<SignalData> > visible_data = get_visible_data();
-	if (visible_data.empty())
-		return make_pair(0.0, 0.0);
-
 	double left_time = DBL_MAX, right_time = DBL_MIN;
+	const set< shared_ptr<SignalData> > visible_data = get_visible_data();
 	for (const shared_ptr<SignalData> d : visible_data)
 	{
-		const double start_time = d->get_start_time();
 		double samplerate = d->samplerate();
 		samplerate = (samplerate <= 0.0) ? 1.0 : samplerate;
 
-		left_time = min(left_time, start_time);
-		right_time = max(right_time, start_time +
-			d->get_max_sample_count() / samplerate);
+		const vector< shared_ptr<Snapshot> > snapshots =
+			d->snapshots();
+		for (const shared_ptr<Snapshot> &s : snapshots) {
+			const double start_time = s->start_time();
+			left_time = min(left_time, start_time);
+			right_time = max(right_time, start_time +
+				d->get_max_sample_count() / samplerate);
+		}
 	}
+
+	if (left_time == DBL_MAX && right_time == DBL_MIN)
+		return make_pair(0.0, 0.0);
 
 	assert(left_time < right_time);
 	return make_pair(left_time, right_time);
