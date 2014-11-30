@@ -50,10 +50,10 @@ set(pulseview_TEST_SOURCES
 	${PROJECT_SOURCE_DIR}/pv/util.cpp
 	${PROJECT_SOURCE_DIR}/pv/view/cursorpair.cpp
 	${PROJECT_SOURCE_DIR}/pv/data/analog.cpp
-	${PROJECT_SOURCE_DIR}/pv/data/analogsnapshot.cpp
+	${PROJECT_SOURCE_DIR}/pv/data/analogsegment.cpp
 	${PROJECT_SOURCE_DIR}/pv/data/logic.cpp
-	${PROJECT_SOURCE_DIR}/pv/data/logicsnapshot.cpp
-	${PROJECT_SOURCE_DIR}/pv/data/snapshot.cpp
+	${PROJECT_SOURCE_DIR}/pv/data/logicsegment.cpp
+	${PROJECT_SOURCE_DIR}/pv/data/segment.cpp
 	${PROJECT_SOURCE_DIR}/pv/data/signaldata.cpp
 	${PROJECT_SOURCE_DIR}/pv/prop/double.cpp
 	${PROJECT_SOURCE_DIR}/pv/prop/enum.cpp
@@ -80,8 +80,8 @@ set(pulseview_TEST_SOURCES
 	${PROJECT_SOURCE_DIR}/pv/widgets/colourpopup.cpp
 	${PROJECT_SOURCE_DIR}/pv/widgets/popup.cpp
 	${PROJECT_SOURCE_DIR}/pv/widgets/wellarray.cpp
-	data/analogsnapshot.cpp
-	data/logicsnapshot.cpp
+	data/analogsegment.cpp
+	data/logicsegment.cpp
 	test.cpp
 )
 

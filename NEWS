@@ -65,7 +65,7 @@
  * Fix an analog data channel interleaving issue (bug #279).
  * Only show the sample count widget if needed (i.e., hide it for scopes).
  * SweepTimingWidget: Show a 1-2-5 based list for samplerate and samplecount.
- * Fixed a unit test issue with AnalogSnapshotTest (bug #286).
+ * Fixed a unit test issue with AnalogSegmentTest (bug #286).
  * Add an extra sample to edges to make the end sample visible (bug #280).
  * Fix an issue with decoder errors being shown even after the error was fixed.
  * Add support for SR_CONF_LIMIT_SAMPLES (device-specific limits) (bug #74).
