@@ -60,6 +60,8 @@ using pv::data::SignalData;
 using pv::data::Segment;
 using pv::util::format_time;
 
+using std::back_inserter;
+using std::copy;
 using std::deque;
 using std::dynamic_pointer_cast;
 using std::list;
@@ -102,6 +104,7 @@ View::View(Session &session, QWidget *parent) :
 	updating_scroll_(false),
 	tick_period_(0.0),
 	tick_prefix_(0),
+	trigger_marker_(new TriggerMarker(*this)),
 	show_cursors_(false),
 	cursors_(new CursorPair(*this)),
 	next_flag_text_('A'),
@@ -193,7 +196,8 @@ const Viewport* View::viewport() const
 vector< shared_ptr<TimeItem> > View::time_items() const
 {
 	const vector<shared_ptr<Flag>> f(flags());
-	vector<shared_ptr<TimeItem>> items(f.begin(), f.end());
+	vector<shared_ptr<TimeItem>> items = {trigger_marker_};
+	copy(f.begin(), f.end(), back_inserter(items));
 	items.push_back(cursors_);
 	items.push_back(cursors_->first());
 	items.push_back(cursors_->second());
@@ -337,6 +341,11 @@ pair<double, double> View::get_time_extents() const
 
 	assert(left_time < right_time);
 	return make_pair(left_time, right_time);
+}
+
+shared_ptr<TriggerMarker> View::trigger_marker()
+{
+	return trigger_marker_;
 }
 
 bool View::cursors_shown() const
@@ -627,8 +636,10 @@ void View::row_item_appearance_changed(bool label, bool content)
 {
 	if (label)
 		header_->update();
-	if (content)
+	if (content) {
 		viewport_->update();
+		cursorheader_->update();
+	}
 }
 
 void View::time_item_appearance_changed(bool label, bool content)

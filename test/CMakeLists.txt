@@ -55,6 +55,7 @@ set(pulseview_TEST_SOURCES
 	${PROJECT_SOURCE_DIR}/pv/view/trace.cpp
 	${PROJECT_SOURCE_DIR}/pv/view/tracegroup.cpp
 	${PROJECT_SOURCE_DIR}/pv/view/tracepalette.cpp
+	${PROJECT_SOURCE_DIR}/pv/view/triggermarker.cpp
 	${PROJECT_SOURCE_DIR}/pv/view/view.cpp
 	${PROJECT_SOURCE_DIR}/pv/view/viewitem.cpp
 	${PROJECT_SOURCE_DIR}/pv/view/viewitempaintparams.cpp
@@ -96,6 +97,7 @@ set(pulseview_TEST_HEADERS
 	${PROJECT_SOURCE_DIR}/pv/view/timemarker.hpp
 	${PROJECT_SOURCE_DIR}/pv/view/trace.hpp
 	${PROJECT_SOURCE_DIR}/pv/view/tracegroup.hpp
+	${PROJECT_SOURCE_DIR}/pv/view/triggermarker.hpp
 	${PROJECT_SOURCE_DIR}/pv/view/view.hpp
 	${PROJECT_SOURCE_DIR}/pv/view/viewitem.hpp
 	${PROJECT_SOURCE_DIR}/pv/view/viewport.hpp

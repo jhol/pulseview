@@ -183,6 +183,7 @@ set(pulseview_SOURCES
 	pv/view/trace.cpp
 	pv/view/tracegroup.cpp
 	pv/view/tracepalette.cpp
+	pv/view/triggermarker.cpp
 	pv/view/view.cpp
 	pv/view/viewitem.cpp
 	pv/view/viewitempaintparams.cpp
@@ -226,6 +227,7 @@ set(pulseview_HEADERS
 	pv/view/timemarker.hpp
 	pv/view/trace.hpp
 	pv/view/tracegroup.hpp
+	pv/view/triggermarker.hpp
 	pv/view/view.hpp
 	pv/view/viewitem.hpp
 	pv/view/viewport.hpp
