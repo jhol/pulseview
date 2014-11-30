@@ -247,9 +247,12 @@ void Session::remove_samples(double start_time, double end_time)
 {
 	stop_capture();
 
-	// remove logic data
-	if (logic_data_)
-		logic_data_->remove(start_time, end_time);
+	{
+		// remove logic data
+		lock_guard<mutex> data_lock(data_mutex_);
+		if (logic_data_)
+			logic_data_->remove(start_time, end_time);
+	}
 
 	{
 		// remove analog data
@@ -263,6 +266,7 @@ void Session::remove_samples(double start_time, double end_time)
 
 	data_received();
 
+#ifdef ENABLE_DECODE
 	{
 		// refresh decoders
 		lock_guard<boost::shared_mutex> lock(signals_mutex_);
@@ -270,15 +274,19 @@ void Session::remove_samples(double start_time, double end_time)
 			trace->decoder()->begin_decode();
 		}
 	}
+#endif
 }
 
 void Session::crop_samples(double start_time, double end_time)
 {
 	stop_capture();
 
-	// crop logic data
-	if (logic_data_)
-		logic_data_->crop(start_time, end_time);
+	{
+		// crop logic data
+		lock_guard<mutex> data_lock(data_mutex_);
+		if (logic_data_)
+			logic_data_->crop(start_time, end_time);
+	}
 
 	{
 		// crop analog data
@@ -292,6 +300,7 @@ void Session::crop_samples(double start_time, double end_time)
 
 	data_received();
 
+#ifdef ENABLE_DECODE
 	{
 		// refresh decoders
 		lock_guard<boost::shared_mutex> lock(signals_mutex_);
@@ -299,6 +308,7 @@ void Session::crop_samples(double start_time, double end_time)
 			trace->decoder()->begin_decode();
 		}
 	}
+#endif
 }
 
 set< shared_ptr<data::SignalData> > Session::get_data() const
