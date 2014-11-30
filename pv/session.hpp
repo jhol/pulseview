@@ -104,6 +104,9 @@ public:
 
 	void stop_capture();
 
+	void remove_samples(double start_time, double end_time);
+	void crop_samples(double start_time, double end_time);
+
 	std::set< std::shared_ptr<data::SignalData> > get_data() const;
 
 	boost::shared_mutex& signals_mutex() const;

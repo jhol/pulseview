@@ -38,6 +38,7 @@ public:
 	uint64_t get_sample_count() const;
 
 	double start_time() const;
+	double time() const;
 
 	double samplerate() const;
 	void set_samplerate(double samplerate);

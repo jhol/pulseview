@@ -46,8 +46,17 @@ public:
 	std::vector< std::shared_ptr<Segment> > segments() const;
 
 	void clear();
+	void remove(double start_time, double end_time);
+	void crop(double start_time, double end_time);
 
 	uint64_t get_max_sample_count() const;
+
+private:
+	typedef std::deque< std::shared_ptr<LogicSegment> >::iterator segment_iterator;
+
+	void erase(double start_time, double end_time);
+	segment_iterator erase(segment_iterator iter,
+		double start_time, double end_time);
 
 private:
 	const unsigned int num_channels_;

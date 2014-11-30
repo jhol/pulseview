@@ -105,6 +105,8 @@ private Q_SLOTS:
 	void on_actionViewShowCursors_triggered();
 
 	void on_actionAbout_triggered();
+	void on_actionViewDelete_triggered();
+	void on_actionViewCrop_triggered();
 
 	void add_decoder(srd_decoder *decoder);
 

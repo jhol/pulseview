@@ -169,6 +169,25 @@ void LogicSegment::get_samples(uint8_t *const data,
 	memcpy(data, (const uint8_t*)data_.data() + start_sample * unit_size_, size);
 }
 
+void LogicSegment::remove_samples(int64_t start_sample, int64_t end_sample)
+{
+	assert(start_sample >= 0);
+	assert(start_sample <= (int64_t)sample_count_);
+	assert(end_sample >= 0);
+	assert(end_sample <= (int64_t)sample_count_);
+
+	lock_guard<recursive_mutex> lock(mutex_);
+
+	memset(mip_map_, 0, sizeof(mip_map_));
+
+	auto start_iter = data_.begin() + start_sample * unit_size_;
+	auto end_iter = data_.begin() + end_sample * unit_size_;
+	data_.erase(start_iter, end_iter);
+	sample_count_ -= end_sample - start_sample;
+
+	append_payload_to_mipmap();
+}
+
 void LogicSegment::reallocate_mipmap_level(MipMapLevel &m)
 {
 	const uint64_t new_data_length = ((m.length + MipMapDataUnit - 1) /

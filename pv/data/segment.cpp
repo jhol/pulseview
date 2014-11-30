@@ -57,6 +57,11 @@ double Segment::start_time() const
 	return start_time_;
 }
 
+double Segment::time() const
+{
+	return sample_count_ / (double) samplerate_;
+}
+
 double Segment::samplerate() const
 {
 	return samplerate_;

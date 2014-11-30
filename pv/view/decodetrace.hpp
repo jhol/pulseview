@@ -89,6 +89,7 @@ public:
 	bool enabled() const;
 
 	const std::shared_ptr<pv::data::DecoderStack>& decoder() const;
+	std::shared_ptr<pv::data::DecoderStack>& decoder();
 
 	/**
 	 * Computes the vertical extents of the contents of this row item.
