@@ -70,14 +70,17 @@ void CursorHeader::paintEvent(QPaintEvent*)
 	QPainter p(this);
 	p.setRenderHint(QPainter::Antialiasing);
 
+	// The cursor labels are not drawn with the arrows exactly on the
+	// bottom line of the widget, because then the selection shadow
+	// would be clipped away.
+	const QRect r = rect().adjusted(0, 0, 0, -BaselineOffset);
+
+	// Draw the trigger marker
+	view_.trigger_marker().paint_label(p, r);
+
 	// Draw the cursors
-	if (view_.cursors_shown()) {
-		// The cursor labels are not drawn with the arrows exactly on the
-		// bottom line of the widget, because then the selection shadow
-		// would be clipped away.
-		const QRect r = rect().adjusted(0, 0, 0, -BaselineOffset);
+	if (view_.cursors_shown())
 		view_.cursors().draw_markers(p, r);
-	}
 }
 
 void CursorHeader::mouseMoveEvent(QMouseEvent *e)

@@ -103,6 +103,7 @@ View::View(Session &session, QWidget *parent) :
 	updating_scroll_(false),
 	tick_period_(0.0),
 	tick_prefix_(0),
+	trigger_marker_(*this),
 	show_cursors_(false),
 	cursors_(*this),
 	hover_point_(-1, -1)
@@ -332,6 +333,11 @@ pair<double, double> View::get_time_extents() const
 
 	assert(left_time < right_time);
 	return make_pair(left_time, right_time);
+}
+
+TriggerMarker& View::trigger_marker()
+{
+	return trigger_marker_;
 }
 
 bool View::cursors_shown() const
@@ -604,8 +610,10 @@ void View::appearance_changed(bool label, bool content)
 {
 	if (label)
 		header_->update();
-	if (content)
+	if (content) {
 		viewport_->update();
+		cursorheader_->update();
+	}
 }
 
 void View::extents_changed(bool horz, bool vert)

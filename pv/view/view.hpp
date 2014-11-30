@@ -36,6 +36,7 @@
 
 #include "cursorpair.hpp"
 #include "rowitemowner.hpp"
+#include "triggermarker.hpp"
 
 namespace pv {
 
@@ -135,6 +136,11 @@ public:
 		get_visible_data() const;
 
 	std::pair<double, double> get_time_extents() const;
+
+	/**
+	 * Returns a reference to the trigger marker.
+	 */
+	TriggerMarker& trigger_marker();
 
 	/**
 	 * Returns true if cursors are displayed. false otherwise.
@@ -272,6 +278,8 @@ private:
 
 	double tick_period_;
 	unsigned int tick_prefix_;
+
+	TriggerMarker trigger_marker_;
 
 	bool show_cursors_;
 	CursorPair cursors_;
