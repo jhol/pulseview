@@ -59,6 +59,8 @@ private:
 	void mousePressEvent(QMouseEvent *e);
 	void mouseReleaseEvent(QMouseEvent *);
 
+	void mouseDoubleClickEvent(QMouseEvent *e);
+
 	int calculateTextHeight();
 
 	std::weak_ptr<TimeMarker> grabbed_marker_;

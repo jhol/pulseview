@@ -78,6 +78,11 @@ void CursorHeader::paintEvent(QPaintEvent*)
 	// Draw the trigger marker
 	view_.trigger_marker().paint_label(p, r);
 
+	// Draw the flags
+	std::vector<Flag> flags(view_.flags());
+	for (Flag &f : flags)
+		f.paint_label(p, r);
+
 	// Draw the cursors
 	if (view_.cursors_shown())
 		view_.cursors().draw_markers(p, r);
@@ -139,6 +144,11 @@ void CursorHeader::mouseReleaseEvent(QMouseEvent *)
 
 	dragging_ = false;
 	grabbed_marker_.reset();
+}
+
+void CursorHeader::mouseDoubleClickEvent(QMouseEvent *e)
+{
+	view_.add_flag(view_.offset() + ((double)e->x() + 0.5) * view_.scale());
 }
 
 } // namespace view

@@ -371,6 +371,17 @@ const CursorPair& View::cursors() const
 	return cursors_;
 }
 
+void View::add_flag(double time)
+{
+	flags_.push_back(Flag(*this, time));
+	appearance_changed(false, true);
+}
+
+const std::vector<Flag>& View::flags() const
+{
+	return flags_;
+}
+
 const QPoint& View::hover_point() const
 {
 	return hover_point_;

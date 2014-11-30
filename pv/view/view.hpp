@@ -35,6 +35,7 @@
 #include <pv/data/signaldata.hpp>
 
 #include "cursorpair.hpp"
+#include "flag.hpp"
 #include "rowitemowner.hpp"
 #include "triggermarker.hpp"
 
@@ -167,6 +168,16 @@ public:
 	 */
 	const CursorPair& cursors() const;
 
+	/**
+	 * Adds a new flag at a specified time.
+	 */
+	void add_flag(double time);
+
+	/**
+	 * Gets the list of flags.
+	 */
+	const std::vector<Flag>& flags() const;
+
 	const QPoint& hover_point() const;
 
 	void update_viewport();
@@ -283,6 +294,8 @@ private:
 
 	bool show_cursors_;
 	CursorPair cursors_;
+
+	std::vector<Flag> flags_;
 
 	QPoint hover_point_;
 

@@ -168,6 +168,7 @@ set(pulseview_SOURCES
 	pv/view/cursor.cpp
 	pv/view/cursorheader.cpp
 	pv/view/cursorpair.cpp
+	pv/view/flag.cpp
 	pv/view/header.cpp
 	pv/view/marginwidget.cpp
 	pv/view/logicsignal.cpp
@@ -212,6 +213,7 @@ set(pulseview_HEADERS
 	pv/toolbars/samplingbar.hpp
 	pv/view/cursor.hpp
 	pv/view/cursorheader.hpp
+	pv/view/flag.hpp
 	pv/view/header.hpp
 	pv/view/logicsignal.hpp
 	pv/view/marginwidget.hpp
