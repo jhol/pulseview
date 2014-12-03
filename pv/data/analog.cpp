@@ -57,6 +57,102 @@ void Analog::clear()
 	segments_.clear();
 }
 
+void Analog::remove(double start_time, double end_time)
+{
+	if (!segments_.size())
+		return;
+
+	if (start_time < 0)
+		start_time = 0;
+	if (end_time < 0)
+		end_time = 0;
+	if (start_time >= end_time)
+		return;
+
+	erase(start_time, end_time);
+}
+
+void Analog::crop(double start_time, double end_time)
+{
+	if (!segments_.size())
+		return;
+
+	if (start_time < 0)
+		start_time = 0;
+	if (end_time < 0)
+		end_time = 0;
+	if (start_time >= end_time)
+		return;
+
+	double total_time = 0;
+	for (auto segment : segments_) {
+		double segment_time = segment->time();
+		total_time += segment_time;
+	}
+
+	if (end_time < total_time)
+		erase(end_time, total_time);
+	erase(0, start_time);
+}
+
+void Analog::erase(double start_time, double end_time)
+{
+	double segment_time = 0;
+	auto iter = segments_.begin();
+
+	// find start
+	for (; iter != segments_.end(); ++iter) {
+		segment_time = (*iter)->time();
+		if (start_time < segment_time)
+			break;
+
+		start_time -= segment_time;
+		end_time -= segment_time;
+	}
+
+	// end is also in this segment?
+	if (end_time < segment_time) {
+		iter = erase(iter, start_time, end_time);
+		return;
+	}
+
+	// end is not in this segment, remove initial samples
+	iter = erase(iter, start_time, segment_time);
+	end_time -= segment_time;
+
+	// remove frames till we reach end segment
+	for (; iter != segments_.end();) {
+		segment_time = (*iter)->time();
+		if (end_time < segment_time)
+			break;
+
+		iter = segments_.erase(iter);
+		end_time -= segment_time;
+	}
+
+	// remove remaining samples
+	if (iter != segments_.end())
+		iter = erase(iter, 0, end_time);
+}
+
+Analog::segment_iterator Analog::erase(Analog::segment_iterator iter,
+	double start_time, double end_time)
+{
+	uint64_t sample_count = (*iter)->get_sample_count();
+	uint64_t samplerate = (*iter)->samplerate();
+
+	int64_t start_sample = start_time * samplerate;
+	int64_t end_sample = end_time * samplerate;
+	int64_t length = end_sample - start_sample;
+
+	// erase entire segment?
+	if (length == (int64_t) sample_count)
+		return segments_.erase(iter);
+
+	(*iter)->remove_samples(start_sample, end_sample);
+	return ++iter;
+}
+
 uint64_t Analog::get_max_sample_count() const
 {
 	uint64_t l = 0;

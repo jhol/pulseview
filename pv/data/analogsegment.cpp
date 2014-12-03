@@ -102,6 +102,25 @@ const float* AnalogSegment::get_samples(
 	return data;
 }
 
+void AnalogSegment::remove_samples(int64_t start_sample, int64_t end_sample)
+{
+	assert(start_sample >= 0);
+	assert(start_sample <= (int64_t)sample_count_);
+	assert(end_sample >= 0);
+	assert(end_sample <= (int64_t)sample_count_);
+
+	lock_guard<recursive_mutex> lock(mutex_);
+
+	memset(envelope_levels_, 0, sizeof(envelope_levels_));
+
+	auto start_iter = data_.begin() + start_sample * sizeof(float);
+	auto end_iter = data_.begin() + end_sample * sizeof(float);
+	data_.erase(start_iter, end_iter);
+	sample_count_ -= end_sample - start_sample;
+
+	append_payload_to_envelope_levels();
+}
+
 void AnalogSegment::get_envelope_section(EnvelopeSection &s,
 	uint64_t start, uint64_t end, float min_length) const
 {

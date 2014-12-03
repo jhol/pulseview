@@ -238,6 +238,20 @@ void MainWindow::setup_ui()
 	action_view_show_cursors->setText(tr("Show &Cursors"));
 	menu_view->addAction(action_view_show_cursors);
 
+	QAction *action_view_delete = new QAction(this);
+	action_view_delete->setShortcut(QKeySequence::Delete);
+	action_view_delete->setObjectName(
+		QString::fromUtf8("actionViewDelete"));
+	action_view_delete->setText(tr("Delete under cursor"));
+	menu_view->addAction(action_view_delete);
+
+	QAction *action_view_crop = new QAction(this);
+	action_view_crop->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_Delete));
+	action_view_crop->setObjectName(
+		QString::fromUtf8("actionViewCrop"));
+	action_view_crop->setText(tr("Crop around cursor"));
+	menu_view->addAction(action_view_crop);
+
 	// Decoders Menu
 #ifdef ENABLE_DECODE
 	QMenu *const menu_decoders = new QMenu;
@@ -550,6 +564,35 @@ void MainWindow::on_actionViewShowCursors_triggered()
 		view_->centre_cursors();
 
 	view_->show_cursors(show);
+}
+
+void MainWindow::on_actionViewDelete_triggered()
+{
+	assert(view_);
+
+	if (!view_->cursors_shown())
+		return;
+
+	double start_time = view_->cursors().first()->time();
+	double end_time = view_->cursors().second()->time();
+
+	session_.remove_samples(start_time, end_time);
+	view_->show_cursors(false);
+}
+
+void MainWindow::on_actionViewCrop_triggered()
+{
+	assert(view_);
+
+	if (!view_->cursors_shown())
+		return;
+
+	double start_time = view_->cursors().first()->time();
+	double end_time = view_->cursors().second()->time();
+
+	session_.crop_samples(start_time, end_time);
+	view_->cursors().first()->set_time(0);
+	view_->cursors().second()->set_time(end_time - start_time);
 }
 
 void MainWindow::on_actionAbout_triggered()

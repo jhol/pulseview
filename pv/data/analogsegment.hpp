@@ -75,6 +75,7 @@ public:
 
 	const float* get_samples(int64_t start_sample,
 		int64_t end_sample) const;
+	void remove_samples(int64_t start_sample, int64_t end_sample);
 
 	void get_envelope_section(EnvelopeSection &s,
 		uint64_t start, uint64_t end, float min_length) const;

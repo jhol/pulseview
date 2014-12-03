@@ -71,6 +71,7 @@ public:
 
 	void get_samples(uint8_t *const data,
 		int64_t start_sample, int64_t end_sample) const;
+	void remove_samples(int64_t start_sample, int64_t end_sample);
 
 private:
 	uint64_t unpack_sample(const uint8_t *ptr) const;

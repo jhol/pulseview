@@ -243,6 +243,74 @@ void Session::stop_capture()
 		sampling_thread_.join();
 }
 
+void Session::remove_samples(double start_time, double end_time)
+{
+	stop_capture();
+
+	{
+		// remove logic data
+		lock_guard<mutex> data_lock(data_mutex_);
+		if (logic_data_)
+			logic_data_->remove(start_time, end_time);
+	}
+
+	{
+		// remove analog data
+		lock_guard<boost::shared_mutex> lock(signals_mutex_);
+		for (auto signal : signals_) {
+			auto analog = dynamic_pointer_cast<view::AnalogSignal>(signal);
+			if (analog)
+				analog->analog_data()->remove(start_time, end_time);
+		}
+	}
+
+	data_received();
+
+#ifdef ENABLE_DECODE
+	{
+		// refresh decoders
+		lock_guard<boost::shared_mutex> lock(signals_mutex_);
+		for (auto trace : decode_traces_) {
+			trace->decoder()->begin_decode();
+		}
+	}
+#endif
+}
+
+void Session::crop_samples(double start_time, double end_time)
+{
+	stop_capture();
+
+	{
+		// crop logic data
+		lock_guard<mutex> data_lock(data_mutex_);
+		if (logic_data_)
+			logic_data_->crop(start_time, end_time);
+	}
+
+	{
+		// crop analog data
+		lock_guard<boost::shared_mutex> lock(signals_mutex_);
+		for (auto signal : signals_) {
+			auto analog = dynamic_pointer_cast<view::AnalogSignal>(signal);
+			if (analog)
+				analog->analog_data()->crop(start_time, end_time);
+		}
+	}
+
+	data_received();
+
+#ifdef ENABLE_DECODE
+	{
+		// refresh decoders
+		lock_guard<boost::shared_mutex> lock(signals_mutex_);
+		for (auto trace : decode_traces_) {
+			trace->decoder()->begin_decode();
+		}
+	}
+#endif
+}
+
 set< shared_ptr<data::SignalData> > Session::get_data() const
 {
 	shared_lock<shared_mutex> lock(signals_mutex_);

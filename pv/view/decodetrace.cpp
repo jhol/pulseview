@@ -156,6 +156,11 @@ const std::shared_ptr<pv::data::DecoderStack>& DecodeTrace::decoder() const
 	return decoder_stack_;
 }
 
+std::shared_ptr<pv::data::DecoderStack>& DecodeTrace::decoder()
+{
+	return decoder_stack_;
+}
+
 pair<int, int> DecodeTrace::v_extents() const
 {
 	/// @todo Replace this with an implementation that knows the true
