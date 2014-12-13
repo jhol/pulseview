@@ -35,6 +35,7 @@
 #include <pv/data/signaldata.hpp>
 
 #include "cursorpair.hpp"
+#include "flag.hpp"
 #include "rowitemowner.hpp"
 
 namespace pv {
@@ -161,6 +162,16 @@ public:
 	 */
 	std::shared_ptr<CursorPair> cursors() const;
 
+	/**
+	 * Adds a new flag at a specified time.
+	 */
+	void add_flag(double time);
+
+	/**
+	 * Gets the list of flags.
+	 */
+	std::vector< std::shared_ptr<Flag> > flags() const;
+
 	const QPoint& hover_point() const;
 
 	void update_viewport();
@@ -272,6 +283,9 @@ private:
 
 	bool show_cursors_;
 	std::shared_ptr<CursorPair> cursors_;
+
+	std::vector< std::shared_ptr<Flag> > flags_;
+	char next_flag_text_;
 
 	QPoint hover_point_;
 
