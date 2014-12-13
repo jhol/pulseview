@@ -37,7 +37,7 @@ class Popup;
 
 namespace view {
 
-class SelectableItem : public QObject
+class ViewItem : public QObject
 {
 	Q_OBJECT
 
@@ -45,7 +45,7 @@ private:
 	static const int HighlightRadius;
 
 public:
-	SelectableItem();
+	ViewItem();
 
 public:
 	/**
