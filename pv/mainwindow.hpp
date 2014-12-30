@@ -62,6 +62,11 @@ public:
 		const char *open_file_name = NULL,
 		QWidget *parent = 0);
 
+	/**
+	 * Returns a pointer to the view.
+	 */
+	pv::view::View* view() const;
+
 	void run_stop();
 
 	void select_device(std::shared_ptr<sigrok::Device> device);

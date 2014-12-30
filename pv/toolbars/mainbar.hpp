@@ -73,6 +73,8 @@ public:
 Q_SIGNALS:
 	void run_stop();
 
+	void decoder_selected(srd_decoder *decoder);
+
 private:
 	void update_sample_rate_selector();
 	void update_sample_rate_selector_value();
@@ -115,6 +117,8 @@ private:
 	QIcon icon_green_;
 	QIcon icon_grey_;
 	QToolButton run_stop_button_;
+
+	QToolButton menu_button_;
 };
 
 } // namespace toolbars
