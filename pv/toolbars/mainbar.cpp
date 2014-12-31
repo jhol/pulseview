@@ -99,6 +99,8 @@ MainBar::MainBar(Session &session, MainWindow &main_window) :
 	action_connect->setObjectName(QString::fromUtf8("actionConnect"));
 	menu_file->addAction(action_connect);
 
+	menu->addAction(menu_file->menuAction());
+
 	// View Menu
 	QMenu *menu_view = new QMenu;
 	menu_view->setTitle(tr("&View"));
@@ -113,6 +115,8 @@ MainBar::MainBar(Session &session, MainWindow &main_window) :
 	action_view_show_cursors->setText(tr("Show &Cursors"));
 	menu_view->addAction(action_view_show_cursors);
 
+	menu->addAction(menu_view->menuAction());
+
 	// Decoders Menu
 #ifdef ENABLE_DECODE
 	QMenu *const menu_decoders = new QMenu;
@@ -125,6 +129,8 @@ MainBar::MainBar(Session &session, MainWindow &main_window) :
 		this, SIGNAL(decoder_selected(srd_decoder*)));
 
 	menu_decoders->addMenu(menu_decoders_add);
+
+	menu->addAction(menu_decoders->menuAction());
 #endif
 
 	// Help Menu
@@ -136,11 +142,6 @@ MainBar::MainBar(Session &session, MainWindow &main_window) :
 	action_about->setText(tr("&About..."));
 	menu_help->addAction(action_about);
 
-	menu->addAction(menu_file->menuAction());
-	menu->addAction(menu_view->menuAction());
-#ifdef ENABLE_DECODE
-	menu->addAction(menu_decoders->menuAction());
-#endif
 	menu->addAction(menu_help->menuAction());
 
 	// Quit item
