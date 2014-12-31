@@ -101,22 +101,6 @@ MainBar::MainBar(Session &session, MainWindow &main_window) :
 
 	menu->addAction(menu_file->menuAction());
 
-	// View Menu
-	QMenu *menu_view = new QMenu;
-	menu_view->setTitle(tr("&View"));
-
-	QAction *action_view_show_cursors = new QAction(this);
-	action_view_show_cursors->setCheckable(true);
-	action_view_show_cursors->setChecked(
-		main_window.view()->cursors_shown());
-	action_view_show_cursors->setShortcut(QKeySequence(Qt::Key_C));
-	action_view_show_cursors->setObjectName(
-		QString::fromUtf8("actionViewShowCursors"));
-	action_view_show_cursors->setText(tr("Show &Cursors"));
-	menu_view->addAction(action_view_show_cursors);
-
-	menu->addAction(menu_view->menuAction());
-
 	// Decoders Menu
 #ifdef ENABLE_DECODE
 	QMenu *const menu_decoders = new QMenu;
@@ -208,6 +192,17 @@ MainBar::MainBar(Session &session, MainWindow &main_window) :
 	action_view_zoom_one_to_one->setObjectName(
 		QString::fromUtf8("actionViewZoomOneToOne"));
 
+	QAction *action_view_show_cursors = new QAction(this);
+	action_view_show_cursors->setCheckable(true);
+	action_view_show_cursors->setChecked(
+		main_window.view()->cursors_shown());
+	action_view_show_cursors->setIcon(QIcon::fromTheme("show-cursors",
+		QIcon(":/icons/show-cursors.svg")));
+	action_view_show_cursors->setShortcut(QKeySequence(Qt::Key_C));
+	action_view_show_cursors->setObjectName(
+		QString::fromUtf8("actionViewShowCursors"));
+	action_view_show_cursors->setText(tr("Show &Cursors"));
+
 	addAction(action_open);
 	addAction(action_save_as);
 	addSeparator();
@@ -215,6 +210,8 @@ MainBar::MainBar(Session &session, MainWindow &main_window) :
 	addAction(action_view_zoom_out);
 	addAction(action_view_zoom_fit);
 	addAction(action_view_zoom_one_to_one);
+	addSeparator();
+	addAction(action_view_show_cursors);
 	addSeparator();
 
 	connect(&run_stop_button_, SIGNAL(clicked()),
