@@ -94,81 +94,14 @@ MainBar::MainBar(Session &session, MainWindow &main_window) :
 	QMenu *const menu_file = new QMenu;
 	menu_file->setTitle(tr("&File"));
 
-	QAction *const action_open = new QAction(this);
-	action_open->setText(tr("&Open..."));
-	action_open->setIcon(QIcon::fromTheme("document-open",
-		QIcon(":/icons/document-open.png")));
-	action_open->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
-	action_open->setObjectName(QString::fromUtf8("actionOpen"));
-	menu_file->addAction(action_open);
-
-	QAction *const action_save_as = new QAction(this);
-	action_save_as->setText(tr("&Save As..."));
-	action_save_as->setIcon(QIcon::fromTheme("document-save-as",
-		QIcon(":/icons/document-save-as.png")));
-	action_save_as->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
-	action_save_as->setObjectName(QString::fromUtf8("actionSaveAs"));
-	menu_file->addAction(action_save_as);
-
-	menu_file->addSeparator();
-
 	QAction *const action_connect = new QAction(this);
 	action_connect->setText(tr("&Connect to Device..."));
 	action_connect->setObjectName(QString::fromUtf8("actionConnect"));
 	menu_file->addAction(action_connect);
 
-	menu_file->addSeparator();
-
-	QAction *action_quit = new QAction(this);
-	action_quit->setText(tr("&Quit"));
-	action_quit->setIcon(QIcon::fromTheme("application-exit",
-		QIcon(":/icons/application-exit.png")));
-	action_quit->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
-	action_quit->setObjectName(QString::fromUtf8("actionQuit"));
-	menu_file->addAction(action_quit);
-
 	// View Menu
 	QMenu *menu_view = new QMenu;
 	menu_view->setTitle(tr("&View"));
-
-	QAction *const action_view_zoom_in = new QAction(this);
-	action_view_zoom_in->setText(tr("Zoom &In"));
-	action_view_zoom_in->setIcon(QIcon::fromTheme("zoom-in",
-		QIcon(":/icons/zoom-in.png")));
-	// simply using Qt::Key_Plus shows no + in the menu
-	action_view_zoom_in->setShortcut(QKeySequence::ZoomIn);
-	action_view_zoom_in->setObjectName(
-		QString::fromUtf8("actionViewZoomIn"));
-	menu_view->addAction(action_view_zoom_in);
-
-	QAction *const action_view_zoom_out = new QAction(this);
-	action_view_zoom_out->setText(tr("Zoom &Out"));
-	action_view_zoom_out->setIcon(QIcon::fromTheme("zoom-out",
-		QIcon(":/icons/zoom-out.png")));
-	action_view_zoom_out->setShortcut(QKeySequence::ZoomOut);
-	action_view_zoom_out->setObjectName(
-		QString::fromUtf8("actionViewZoomOut"));
-	menu_view->addAction(action_view_zoom_out);
-
-	QAction *const action_view_zoom_fit = new QAction(this);
-	action_view_zoom_fit->setText(tr("Zoom to &Fit"));
-	action_view_zoom_fit->setIcon(QIcon::fromTheme("zoom-fit",
-		QIcon(":/icons/zoom-fit.png")));
-	action_view_zoom_fit->setShortcut(QKeySequence(Qt::Key_F));
-	action_view_zoom_fit->setObjectName(
-		QString::fromUtf8("actionViewZoomFit"));
-	menu_view->addAction(action_view_zoom_fit);
-
-	QAction *const action_view_zoom_one_to_one = new QAction(this);
-	action_view_zoom_one_to_one->setText(tr("Zoom to &One-to-One"));
-	action_view_zoom_one_to_one->setIcon(QIcon::fromTheme("zoom-original",
-		QIcon(":/icons/zoom-original.png")));
-	action_view_zoom_one_to_one->setShortcut(QKeySequence(Qt::Key_O));
-	action_view_zoom_one_to_one->setObjectName(
-		QString::fromUtf8("actionViewZoomOneToOne"));
-	menu_view->addAction(action_view_zoom_one_to_one);
-
-	menu_view->addSeparator();
 
 	QAction *action_view_show_cursors = new QAction(this);
 	action_view_show_cursors->setCheckable(true);
@@ -210,12 +143,70 @@ MainBar::MainBar(Session &session, MainWindow &main_window) :
 #endif
 	menu->addAction(menu_help->menuAction());
 
+	// Quit item
+	menu->addSeparator();
+
+	QAction *action_quit = new QAction(this);
+	action_quit->setText(tr("&Quit"));
+	action_quit->setIcon(QIcon::fromTheme("application-exit",
+		QIcon(":/icons/application-exit.png")));
+	action_quit->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
+	action_quit->setObjectName(QString::fromUtf8("actionQuit"));
+	menu->addAction(action_quit);
+
 	menu_button_.setMenu(menu);
 	menu_button_.setPopupMode(QToolButton::InstantPopup);
 	menu_button_.setIcon(QIcon::fromTheme("menu",
 		QIcon(":/icons/menu.svg")));
 
 	// Setup the toolbar
+	QAction *const action_open = new QAction(this);
+	action_open->setText(tr("&Open..."));
+	action_open->setIcon(QIcon::fromTheme("document-open",
+		QIcon(":/icons/document-open.png")));
+	action_open->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
+	action_open->setObjectName(QString::fromUtf8("actionOpen"));
+
+	QAction *const action_save_as = new QAction(this);
+	action_save_as->setText(tr("&Save As..."));
+	action_save_as->setIcon(QIcon::fromTheme("document-save-as",
+		QIcon(":/icons/document-save-as.png")));
+	action_save_as->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
+	action_save_as->setObjectName(QString::fromUtf8("actionSaveAs"));
+
+	QAction *const action_view_zoom_in = new QAction(this);
+	action_view_zoom_in->setText(tr("Zoom &In"));
+	action_view_zoom_in->setIcon(QIcon::fromTheme("zoom-in",
+		QIcon(":/icons/zoom-in.png")));
+	// simply using Qt::Key_Plus shows no + in the menu
+	action_view_zoom_in->setShortcut(QKeySequence::ZoomIn);
+	action_view_zoom_in->setObjectName(
+		QString::fromUtf8("actionViewZoomIn"));
+
+	QAction *const action_view_zoom_out = new QAction(this);
+	action_view_zoom_out->setText(tr("Zoom &Out"));
+	action_view_zoom_out->setIcon(QIcon::fromTheme("zoom-out",
+		QIcon(":/icons/zoom-out.png")));
+	action_view_zoom_out->setShortcut(QKeySequence::ZoomOut);
+	action_view_zoom_out->setObjectName(
+		QString::fromUtf8("actionViewZoomOut"));
+
+	QAction *const action_view_zoom_fit = new QAction(this);
+	action_view_zoom_fit->setText(tr("Zoom to &Fit"));
+	action_view_zoom_fit->setIcon(QIcon::fromTheme("zoom-fit",
+		QIcon(":/icons/zoom-fit.png")));
+	action_view_zoom_fit->setShortcut(QKeySequence(Qt::Key_F));
+	action_view_zoom_fit->setObjectName(
+		QString::fromUtf8("actionViewZoomFit"));
+
+	QAction *const action_view_zoom_one_to_one = new QAction(this);
+	action_view_zoom_one_to_one->setText(tr("Zoom to &One-to-One"));
+	action_view_zoom_one_to_one->setIcon(QIcon::fromTheme("zoom-original",
+		QIcon(":/icons/zoom-original.png")));
+	action_view_zoom_one_to_one->setShortcut(QKeySequence(Qt::Key_O));
+	action_view_zoom_one_to_one->setObjectName(
+		QString::fromUtf8("actionViewZoomOneToOne"));
+
 	addAction(action_open);
 	addAction(action_save_as);
 	addSeparator();
