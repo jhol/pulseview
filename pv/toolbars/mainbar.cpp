@@ -101,22 +101,6 @@ MainBar::MainBar(Session &session, MainWindow &main_window) :
 
 	menu->addAction(menu_file->menuAction());
 
-	// Decoders Menu
-#ifdef ENABLE_DECODE
-	QMenu *const menu_decoders = new QMenu;
-	menu_decoders->setTitle(tr("&Decoders"));
-
-	pv::widgets::DecoderMenu *const menu_decoders_add =
-		new pv::widgets::DecoderMenu(menu_decoders, true);
-	menu_decoders_add->setTitle(tr("&Add"));
-	connect(menu_decoders_add, SIGNAL(decoder_selected(srd_decoder*)),
-		this, SIGNAL(decoder_selected(srd_decoder*)));
-
-	menu_decoders->addMenu(menu_decoders_add);
-
-	menu->addAction(menu_decoders->menuAction());
-#endif
-
 	// Help Menu
 	QMenu *const menu_help = new QMenu;
 	menu_help->setTitle(tr("&Help"));
@@ -203,6 +187,19 @@ MainBar::MainBar(Session &session, MainWindow &main_window) :
 		QString::fromUtf8("actionViewShowCursors"));
 	action_view_show_cursors->setText(tr("Show &Cursors"));
 
+#ifdef ENABLE_DECODE
+	QToolButton *add_decoder_button = new QToolButton(this);
+	pv::widgets::DecoderMenu *const menu_decoders_add =
+		new pv::widgets::DecoderMenu(add_decoder_button, true);
+	menu_decoders_add->setTitle(tr("&Add"));
+	connect(menu_decoders_add, SIGNAL(decoder_selected(srd_decoder*)),
+		this, SIGNAL(decoder_selected(srd_decoder*)));
+	add_decoder_button->setIcon(QIcon::fromTheme("add-decoder",
+		QIcon(":/icons/add-decoder.svg")));
+	add_decoder_button->setPopupMode(QToolButton::InstantPopup);
+	add_decoder_button->setMenu(menu_decoders_add);
+#endif
+
 	addAction(action_open);
 	addAction(action_save_as);
 	addSeparator();
@@ -241,6 +238,10 @@ MainBar::MainBar(Session &session, MainWindow &main_window) :
 	addWidget(&sample_count_);
 	addWidget(&sample_rate_);
 	addWidget(&run_stop_button_);
+#ifdef ENABLE_DECODE
+	addSeparator();
+	addWidget(add_decoder_button);
+#endif
 
 	QWidget *const spacer = new QWidget();
 	spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
