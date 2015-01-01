@@ -1,7 +1,7 @@
 /*
  * This file is part of the PulseView project.
  *
- * Copyright (C) 2012 Joel Holdsworth <joel@airwebreathe.org.uk>
+ * Copyright (C) 2012-2015 Joel Holdsworth <joel@airwebreathe.org.uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,8 @@
 
 #include <extdef.h>
 
-#include <assert.h>
+#include <algorithm>
+#include <cassert>
 
 #include <QAction>
 #include <QDebug>
@@ -43,12 +44,15 @@
 
 #include <libsigrok/libsigrok.hpp>
 
+using std::back_inserter;
+using std::copy;
+using std::list;
 using std::map;
-using std::vector;
 using std::max;
 using std::min;
 using std::shared_ptr;
 using std::string;
+using std::vector;
 
 using sigrok::Capability;
 using sigrok::ConfigKey;
@@ -66,8 +70,7 @@ MainBar::MainBar(Session &session, MainWindow &main_window) :
 	QToolBar("Sampling Bar", &main_window),
 	session_(session),
 	main_window_(main_window),
-	device_selector_(this),
-	updating_device_selector_(false),
+	device_selector_(this, session.device_manager()),
 	configure_button_(this),
 	configure_button_action_(NULL),
 	channels_button_(this),
@@ -89,17 +92,6 @@ MainBar::MainBar(Session &session, MainWindow &main_window) :
 
 	// Setup the menu bar
 	QMenu *const menu = new QMenu(this);
-
-	// File Menu
-	QMenu *const menu_file = new QMenu;
-	menu_file->setTitle(tr("&File"));
-
-	QAction *const action_connect = new QAction(this);
-	action_connect->setText(tr("&Connect to Device..."));
-	action_connect->setObjectName(QString::fromUtf8("actionConnect"));
-	menu_file->addAction(action_connect);
-
-	menu->addAction(menu_file->menuAction());
 
 	// Help Menu
 	QMenu *const menu_help = new QMenu;
@@ -187,6 +179,11 @@ MainBar::MainBar(Session &session, MainWindow &main_window) :
 		QString::fromUtf8("actionViewShowCursors"));
 	action_view_show_cursors->setText(tr("Show &Cursors"));
 
+	// Device selector menu
+	connect(&device_selector_, SIGNAL(device_selected()),
+		this, SLOT(on_device_selected()));
+
+	// Decode menu
 #ifdef ENABLE_DECODE
 	QToolButton *add_decoder_button = new QToolButton(this);
 	pv::widgets::DecoderMenu *const menu_decoders_add =
@@ -213,8 +210,6 @@ MainBar::MainBar(Session &session, MainWindow &main_window) :
 
 	connect(&run_stop_button_, SIGNAL(clicked()),
 		this, SLOT(on_run_stop()));
-	connect(&device_selector_, SIGNAL(currentIndexChanged (int)),
-		this, SLOT(on_device_selected()));
 	connect(&sample_count_, SIGNAL(value_changed()),
 		this, SLOT(on_sample_count_changed()));
 	connect(&sample_rate_, SIGNAL(value_changed()),
@@ -253,48 +248,22 @@ MainBar::MainBar(Session &session, MainWindow &main_window) :
 	sample_rate_.installEventFilter(this);
 }
 
-void MainBar::set_device_list(
-	const std::list< std::shared_ptr<sigrok::Device> > &devices,
-	shared_ptr<Device> selected)
+void MainBar::update_device_list()
 {
-	int selected_index = -1;
+	DeviceManager &mgr = session_.device_manager();
+	shared_ptr<Device> selected_device = session_.device();
+	list< shared_ptr<Device> > devs;
 
-	assert(selected);
+	copy(mgr.devices().begin(), mgr.devices().end(), back_inserter(devs));
 
-	updating_device_selector_ = true;
+	if (std::find(devs.begin(), devs.end(), selected_device) == devs.end())
+		devs.push_back(selected_device);
+	assert(selected_device);
 
-	device_selector_.clear();
-
-	for (auto device : devices) {
-		assert(device);
-
-		string display_name =
-			session_.device_manager().get_display_name(device);
-
-		if (selected == device)
-			selected_index = device_selector_.count();
-
-		device_selector_.addItem(display_name.c_str(),
-			qVariantFromValue(device));
-	}
-
-	// The selected device should have been in the list
-	assert(selected_index != -1);
-	device_selector_.setCurrentIndex(selected_index);
-
+	device_selector_.set_device_list(devs, selected_device);
 	update_device_config_widgets();
-
-	updating_device_selector_ = false;
 }
 
-shared_ptr<Device> MainBar::get_selected_device() const
-{
-	const int index = device_selector_.currentIndex();
-	if (index < 0)
-		return shared_ptr<Device>();
-
-	return device_selector_.itemData(index).value<shared_ptr<Device>>();
-}
 
 void MainBar::set_capture_state(pv::Session::capture_state state)
 {
@@ -315,7 +284,7 @@ void MainBar::update_sample_rate_selector()
 	if (updating_sample_rate_)
 		return;
 
-	const shared_ptr<Device> device = get_selected_device();
+	const shared_ptr<Device> device = device_selector_.selected_device();
 	if (!device)
 		return;
 
@@ -379,7 +348,7 @@ void MainBar::update_sample_rate_selector_value()
 	if (updating_sample_rate_)
 		return;
 
-	const shared_ptr<Device> device = get_selected_device();
+	const shared_ptr<Device> device = device_selector_.selected_device();
 	if (!device)
 		return;
 
@@ -402,7 +371,7 @@ void MainBar::update_sample_count_selector()
 	if (updating_sample_count_)
 		return;
 
-	const shared_ptr<Device> device = get_selected_device();
+	const shared_ptr<Device> device = device_selector_.selected_device();
 	if (!device)
 		return;
 
@@ -456,7 +425,7 @@ void MainBar::update_device_config_widgets()
 {
 	using namespace pv::popups;
 
-	const shared_ptr<Device> device = get_selected_device();
+	const shared_ptr<Device> device = device_selector_.selected_device();
 	if (!device)
 		return;
 
@@ -514,7 +483,7 @@ void MainBar::commit_sample_count()
 	if (updating_sample_count_)
 		return;
 
-	const shared_ptr<Device> device = get_selected_device();
+	const shared_ptr<Device> device = device_selector_.selected_device();
 	if (!device)
 		return;
 
@@ -544,7 +513,7 @@ void MainBar::commit_sample_rate()
 	if (updating_sample_rate_)
 		return;
 
-	const shared_ptr<Device> device = get_selected_device();
+	const shared_ptr<Device> device = device_selector_.selected_device();
 	if (!device)
 		return;
 
@@ -568,10 +537,7 @@ void MainBar::commit_sample_rate()
 
 void MainBar::on_device_selected()
 {
-	if (updating_device_selector_)
-		return;
-
-	shared_ptr<Device> device = get_selected_device();
+	shared_ptr<Device> device = device_selector_.selected_device();
 	if (!device)
 		return;
 
