@@ -67,6 +67,8 @@ private:
 private Q_SLOTS:
 	void device_selected(int index);
 
+	void serial_device_selected(int index);
+
 	void scan_pressed();
 
 private:

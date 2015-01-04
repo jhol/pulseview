@@ -70,6 +70,8 @@ Connect::Connect(QWidget *parent, pv::DeviceManager &device_manager) :
 
 	form_layout_.addRow(tr("Serial &Port"), &serial_devices_);
 	serial_devices_.setEditable(true);
+	connect(&serial_devices_, SIGNAL(activated(int)),
+		this, SLOT(serial_device_selected(int)));
 
 	unset_connection();
 
@@ -155,17 +157,9 @@ void Connect::scan_pressed()
 
 	map<const ConfigKey *, VariantBase> drvopts;
 
-	if (serial_devices_.isVisible()) {
-		QString serial;
-		const int index = serial_devices_.currentIndex();
-		if (index >= 0 && index < serial_devices_.count() &&
-		    serial_devices_.currentText() == serial_devices_.itemText(index))
-			serial = serial_devices_.itemData(index).value<QString>();
-		else
-			serial = serial_devices_.currentText();
+	if (serial_devices_.isVisible())
 		drvopts[ConfigKey::CONN] = Variant<ustring>::create(
-			serial.toUtf8().constData());
-	}
+			serial_devices_.currentText().toUtf8().constData());
 
 	list< shared_ptr<HardwareDevice> > devices =
 		device_manager_.driver_scan(driver, drvopts);
@@ -197,6 +191,12 @@ void Connect::device_selected(int index)
 
 	if (driver->config_check(ConfigKey::SERIALCOMM, ConfigKey::SCAN_OPTIONS))
 		set_serial_connection(driver);
+}
+
+void Connect::serial_device_selected(int index)
+{
+	serial_devices_.setEditText(
+		serial_devices_.itemData(index).value<QString>());
 }
 
 } // namespace dialogs
