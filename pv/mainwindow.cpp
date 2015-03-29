@@ -57,7 +57,7 @@
 #include <stdint.h>
 #include <stdarg.h>
 #include <glib.h>
-#include <libsigrok/libsigrok.hpp>
+#include <libsigrokcxx/libsigrokcxx.hpp>
 
 using std::list;
 using std::map;

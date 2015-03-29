@@ -36,7 +36,7 @@
 #include <QMouseEvent>
 #include <QScrollBar>
 
-#include <libsigrok/libsigrok.hpp>
+#include <libsigrokcxx/libsigrokcxx.hpp>
 
 #include "cursorheader.hpp"
 #include "decodetrace.hpp"
